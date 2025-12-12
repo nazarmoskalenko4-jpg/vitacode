@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .vc-page-wide {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .vc-card-table {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden; 
+  }
+  .table {
+    margin-bottom: 0; 
+  }
+  .table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+    color: #495057;
+    padding: 16px;
+  }
+  .table td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+  }
+  .vc-badge {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+  }
+  .badge-lose { background-color: #fff3cd; color: #856404; }
+  .badge-gain { background-color: #f8d7da; color: #721c24; }
+  .badge-maintain { background-color: #d1ecf1; color: #0c5460; }
+  
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+</style>
+
+<div class="vc-page-wide">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>📂 Список користувачів</h1>
+    <a href="/ui/plan" class="btn btn-primary btn-icon btn-lg">
+      <span>+</span> Створити новий
+    </a>
+  </div>
+
+  <div class="vc-card-table">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Користувач</th>
+            <th>Параметри</th>
+            <th>Ціль</th>
+            <th>Бюджет</th>
+            <th class="text-end">Дії</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in profiles %}
+          <tr>
+            <td class="fw-bold text-secondary">#{{ p.id }}</td>
+            <td>
+              <div class="fw-bold">
+                {% if p.sex == 'male' %}Чоловік{% else %}Жінка{% endif %}
+              </div>
+              <div class="text-muted small">{{ p.age }} років</div>
+            </td>
+            <td>
+              <div>{{ p.height_cm|round|int }} см</div>
+              <div class="text-muted small">{{ p.weight_kg|round|int }} кг</div>
+            </td>
+            <td>
+              {% if p.goal == 'lose' %}
+                <span class="vc-badge badge-lose">Схуднення</span>
+              {% elif p.goal == 'gain' %}
+                <span class="vc-badge badge-gain">Набір маси</span>
+              {% else %}
+                <span class="vc-badge badge-maintain">Утримання</span>
+              {% endif %}
+            </td>
+            <td class="fw-bold text-success">{{ p.budget_per_day }} грн</td>
+            <td class="text-end">
+              <form method="post" action="/ui/profile/delete/{{ p.id }}?origin=list" 
+                    onsubmit="return confirm('Ви впевнені, що хочете видалити профіль #{{ p.id }}?');"
+                    style="display: inline-block;">
+                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon">
+                  🗑 Видалити
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              Список порожній. Створіть перший план!
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="mb-4">Створення плану харчування</h1>
+
+<form method="post" action="/ui/plan" class="row g-3">
+  <div class="col-md-3">
+    <label class="form-label">Стать</label>
+    <select name="sex" class="form-select" required>
+      <option value="male">Чоловіча</option>
+      <option value="female">Жіноча</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Вік, років</label>
+    <input type="number" name="age" class="form-control" min="10" max="100" required />
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Зріст, см</label>
+    <input type="number" step="0.1" name="height_cm" class="form-control" required />
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Вага, кг</label>
+    <input type="number" step="0.1" name="weight_kg" class="form-control" required />
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Коефіцієнт активності</label>
+    <select name="activity_factor" class="form-select" required>
+      <option value="1.2">1.2 — мінімальна активність</option>
+      <option value="1.375">1.375 — легка активність</option>
+      <option value="1.55" selected>1.55 — середня активність</option>
+      <option value="1.725">1.725 — висока активність</option>
+      <option value="1.9">1.9 — дуже висока активність</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Ціль</label>
+    <select name="goal" class="form-select">
+      <option value="lose">Схуднення</option>
+      <option value="maintain" selected>Утримання ваги</option>
+      <option value="gain">Набір м'язової маси</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Бюджет на день, грн</label>
+    <input type="number" step="1" name="budget_per_day" class="form-control" required />
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Тривалість плану</label>
+    <select name="mode" class="form-select">
+      <option value="day" selected>На 1 день</option>
+      <option value="week">На тиждень (7 днів)</option>
+    </select>
+  </div>
+
+  <div class="col-md-12">
+    <label class="form-label d-block fw-bold">Алергії та виключення продуктів:</label>
+    
+    <input type="hidden" name="allergies" id="allergiesInput" value="">
+
+    <div class="card p-3 bg-light">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-check">
+            <input class="form-check-input allergen-check" type="checkbox" value="gluten" id="alg_gluten">
+            <label class="form-check-label" for="alg_gluten">🌾 Глютен</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-check">
+            <input class="form-check-input allergen-check" type="checkbox" value="milk" id="alg_milk">
+            <label class="form-check-label" for="alg_milk">🥛 Лактоза / Молоко</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-check">
+            <input class="form-check-input allergen-check" type="checkbox" value="eggs" id="alg_eggs">
+            <label class="form-check-label" for="alg_eggs">🥚 Яйця</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-check">
+            <input class="form-check-input allergen-check" type="checkbox" value="fish" id="alg_fish">
+            <label class="form-check-label" for="alg_fish">🐟 Риба / Морепродукти</label>
+          </div>
+        </div>
+        <div class="col-md-3 mt-2">
+          <div class="form-check">
+            <input class="form-check-input allergen-check" type="checkbox" value="nuts" id="alg_nuts">
+            <label class="form-check-label" for="alg_nuts">🥜 Горіхи</label>
+          </div>
+        </div>
+        <div class="col-md-3 mt-2">
+          <div class="form-check">
+            <input class="form-check-input allergen-check" type="checkbox" value="soy" id="alg_soy">
+            <label class="form-check-label" for="alg_soy">🌱 Соя</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-text">Оберіть продукти, які система має виключити з вашого раціону.</div>
+  </div>
+
+  <div class="col-12 mt-4 text-center">
+    <button type="submit" class="btn btn-primary btn-lg px-5">
+      Згенерувати план
+    </button>
+    
+    <a href="/ui/profiles" class="btn btn-outline-secondary btn-lg ms-3">
+      📂 Всі користувачі
+    </a>
+  </div>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const checks = document.querySelectorAll('.allergen-check');
+    const hiddenInput = document.getElementById('allergiesInput');
+
+    function updateAllergies() {
+      const selected = Array.from(checks)
+        .filter(c => c.checked)
+        .map(c => c.value);
+      hiddenInput.value = selected.join(',');
+    }
+
+    checks.forEach(c => {
+      c.addEventListener('change', updateAllergies);
+    });
+  });
+</script>
+{% endblock %}
